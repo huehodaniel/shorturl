@@ -1,0 +1,34 @@
+version: '3'
+services:
+  web:
+    image: "hueho/shorturl:0.0.1"
+    ports:
+      - "8080:8080"
+    deploy:
+      mode: replicated
+      replicas: 4
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    networks:
+      - "shorturl"
+  postgres:
+    image: "postgres:11-alpine"
+    environment:
+      POSTGRES_USER: "shorturl"
+      POSTGRES_PASSWORD: "shorturl"
+    networks:
+      - "shorturl"
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+      restart_policy:
+        condition: on-failure
+networks:
+  shorturl:
