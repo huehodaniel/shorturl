@@ -146,5 +146,20 @@ class ShortURLControllerTests(
                 """.trimIndent()))
     }
 
+    @Test
+    fun `test no URL`() {
+        mockMvc.perform(
+                post("/api").contentType(MediaType.TEXT_PLAIN))
+                .andDo(print())
+                .andExpect(status().`is`(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().json("""
+                    {
+                        "error": true,
+                        "message": "No URL supplied"
+                    }
+                """.trimIndent()))
+    }
+
     private fun parseJSON(str: String) : JSONObject = JSONParser.parseJSON(str) as JSONObject
 }

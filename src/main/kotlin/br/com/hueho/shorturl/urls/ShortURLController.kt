@@ -16,7 +16,11 @@ class ShortURLController(private val service: ShortURLService) {
     }
 
     @PostMapping
-    fun putNewURL(@RequestBody url: String) : ShortURLView = service.putNewURL(url, ::generateURL)
+    fun putNewURL(@RequestBody(required = false) url: String?) : ShortURLView {
+        if(url != null) return service.putNewURL(url, ::generateURL)
+
+        throw BodyNotSupplied()
+    }
 
     @GetMapping("/{id}")
     fun getURL(@PathVariable id: String) : ShortURLView = service.getURL(id, ::generateURL)
@@ -32,22 +36,37 @@ fun generateURL(id: String) : String {
             .toUriString()
 }
 
+/** Error handling **/
+
 @ControllerAdvice
-class InvalidURLAdvice {
+class ShortURLErrorAdvice {
+    /** Handling external exceptions **/
+
     @ResponseBody
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun invalidURLHandler(ex: InvalidURLException) : JsonObject {
         return mapOf("error" to true, "message" to ex.message!!)
     }
-}
 
-@ControllerAdvice
-class EntityNotFoundAdvice {
     @ResponseBody
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun entityNotFoundHandler(ex: EntityNotFound) : JsonObject {
+        return mapOf("error" to true, "message" to ex.message!!)
+    }
+}
+
+/** Request errors **/
+
+class BodyNotSupplied : RuntimeException("No URL supplied")
+
+@ControllerAdvice
+class BodyNotSuppliedAdvice {
+    @ResponseBody
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun bodyNotSuppliedHandler(ex: BodyNotSupplied) : JsonObject {
         return mapOf("error" to true, "message" to ex.message!!)
     }
 }
