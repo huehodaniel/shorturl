@@ -8,11 +8,12 @@ import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.view.RedirectView
 
 @Controller
 class FrontendController(@Qualifier("default") private val repo: ShortURLRepository, private val encoder: Hashids) {
-
     @GetMapping("/ga/{id}")
     @Transactional
     fun followURL(@PathVariable("id") id: String) : RedirectView {
@@ -29,6 +30,9 @@ class FrontendController(@Qualifier("default") private val repo: ShortURLReposit
         redirect.setStatusCode(HttpStatus.FOUND)
         return redirect
     }
+
+    @GetMapping("/error")
+    fun error() : String = "error.html"
 
     private fun decode(str: String) : Long? {
         val decoded = encoder.decode(str)
