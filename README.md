@@ -17,10 +17,6 @@ execute it with `java -jar build/libs/shorturl-0.0.2-SNAPSHOT.jar`.
 To execute ShortURL in a local Docker cluster with load balancing and persistence with PostgreSQL,
 ensure your machine is a manager node with `docker swarm init` and execute `docker stack deploy -c docker-compose.yml shorturl`.
 
-### Demo
-
-A cloud-deployed demo is available in https://shorturl.hueho.xyz, using DigitalOcean infrastructure.
-
 #### Self-service
 
 Deployment instructions for cloud environments aren't available yet, but you can either
